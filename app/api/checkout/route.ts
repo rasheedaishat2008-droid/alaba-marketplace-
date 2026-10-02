@@ -92,4 +92,15 @@ export async function POST(req: Request) {
       method: "POST",
       headers: {
         Authorization: "Basic " + Buffer.from("api:" + process.env.MAILGUN_API_KEY).toString("base64"),
-        "Content-Type":
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: form,
+    });
+    emailSent = res.ok;
+    if (!res.ok) console.error("Mailgun error:", res.status, await res.text());
+  } catch (e) {
+    console.error("Mailgun failed:", e);
+  }
+
+  return NextResponse.json({ orderId: order.id, emailSent });
+}
